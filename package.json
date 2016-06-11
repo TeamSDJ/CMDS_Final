@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/TeamSDJ/CMDS_Final/issues"
   },
-  "homepage": "https://github.com/TeamSDJ/CMDS_Final#readme"
+  "homepage": "https://github.com/TeamSDJ/CMDS_Final#readme",
+  "dependencies": {
+    "googlemaps": "^1.6.0",
+    "express": ">=4.13",
+    "jade": "1.11.0"
+  }
 }
