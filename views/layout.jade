@@ -1,88 +1,33 @@
 doctype html
-//html
-//    head
-//        title= title
-//        link(rel='stylesheet', href='/stylesheets/style.css')
-//
-//    body
-//        header
-//            h1= title
-//            h2= subtitle
-//            nav
-//                p Maps of great <a href="coffee" title="Coffee Map">coffee</a> and <a href="pizza" title="Pizza Map">pizza</a> shops in Philadelphia.
-//        #map_canvas
-//        script(src='http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js')
-//        script(src='https://maps.googleapis.com/maps/api/js?&sensor=false')
-//        block content
 html
-    head
-        title Simple Map
-        meta(name='viewport', content='initial-scale=1.0')
-        meta(charset='utf-8')
-        style.
-            html, body {
-                height: 100%;
-                margin: 0;
-                padding: 0;
-            }
-            #map {
-                height: 100%;
-            }
+  head
+    title Simple Map
+    script(src='http://code.jquery.com/jquery-latest.min.js', type='text/javascript')
+    script(src='/javascripts/main.js')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    meta(name='viewport', content='initial-scale=1.0')
+    meta(charset='utf-8')
     body
-        #map
-        script.
-            var map;
-            function initMap() {
-                var myLatLng = {lng: 121.53, lat: 25.03};
-
-                var map = new google.maps.Map(document.getElementById('map'), {
-                    zoom: 16,
-                    center: myLatLng
-                });
-
-                var contentString = '<div id="content">' +
-                        '<div id="siteNotice">' +
-                        '</div>' +
-                        '<h1 id="firstHeading" class="firstHeading">Uluru</h1>' +
-                        '<div id="bodyContent">' +
-                        '<p><b>Uluru</b>, also referred to as <b>Ayers Rock</b>, is a large ' +
-                        'sandstone rock formation in the southern part of the ' +
-                        'Northern Territory, central Australia. It lies 335&#160;km (208&#160;mi) ' +
-                        'south west of the nearest large town, Alice Springs; 450&#160;km ' +
-                        '(280&#160;mi) by road. Kata Tjuta and Uluru are the two major ' +
-                        'features of the Uluru - Kata Tjuta National Park. Uluru is ' +
-                        'sacred to the Pitjantjatjara and Yankunytjatjara, the ' +
-                        'Aboriginal people of the area. It has many springs, waterholes, ' +
-                        'rock caves and ancient paintings. Uluru is listed as a World ' +
-                        'Heritage Site.</p>' +
-                        '<p>Attribution: Uluru, <a href="https://en.wikipedia.org/w/index.php?title=Uluru&oldid=297882194">' +
-                        'https://en.wikipedia.org/w/index.php?title=Uluru</a> ' +
-                        '(last visited June 22, 2009).</p>' +
-                        '</div>' +
-                        '</div>';
-
-                var infowindow = new google.maps.InfoWindow({
-                    content: contentString
-                });
-
-                var marker = new google.maps.Marker({
-                    position: myLatLng,
-                    draggable: true,
-                    map: map,
-                    animation: google.maps.Animation.DROP,
-                    title: 'Hello World!'
-                });
-                marker.addListener('click', function() {
-                    toggleBounce();
-                    infowindow.open(map, marker);
-                });
-
-                function toggleBounce() {
-                    if (marker.getAnimation() !== null) {
-                        marker.setAnimation(null);
-                    } else {
-                        marker.setAnimation(google.maps.Animation.BOUNCE);
-                    }
-                }
-            }
-        script(src='https://maps.googleapis.com/maps/api/js?key=AIzaSyCIH88GpAbKei66fYMJOACK0QAk9_y6BZw&callback=initMap', async='', defer='')
+      input#pac-input.controls(type='text', placeholder='Search Box')
+      #map
+      script(src='https://maps.googleapis.com/maps/api/js?key=AIzaSyCIH88GpAbKei66fYMJOACK0QAk9_y6BZw&callback=initMap&libraries=places&language=tw', async='', defer='')
+      script(src='http://connect.facebook.net/en_US/all.js')
+      script.
+        window.fbAsyncInit = function () {
+          FB.init({
+            appId: '818306144937790',
+            xfbml: true,
+            version: 'v2.6'
+          });
+        };
+        (function (d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0];
+          if (d.getElementById(id)) {
+            return;
+          }
+          js = d.createElement(s);
+          js.id = id;
+          js.src = "//connect.facebook.net/en_US/sdk.js";
+          fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+        function initMap() { runAllProcess(); }

@@ -1,8 +1,8 @@
 var express = require('express'),
-    path = require('path'),
-    jade = require('jade'),
-    coffee = require('./routes/coffee'),
-    pizza = require('./routes/pizza');
+    path    = require('path'),
+    jade    = require('jade'),
+    coffee  = require('./routes/coffee'),
+    pizza   = require('./routes/pizza');
 
 var app = new express();
 
@@ -13,8 +13,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/coffee', coffee);
 app.use('/pizza', pizza);
 
-app.get('/',function(req,res){
+app.get('/', function(req, res) {
   res.render('layout', { title: 'Node.js / Google Maps Example', subtitle: 'with the help of the Express, Path, and Jade modules' });
 });
 
-app.listen(3000)
+app.get('/test', function(req, res) {
+  console.log('Helllllllllllll world');
+});
+
+app.listen(3000);
