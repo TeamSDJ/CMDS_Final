@@ -122,10 +122,10 @@ def k_nearest_neighbor(table, k):
     distances, indices = nbrs.kneighbors(table)
     indices
     neighbor_list = []
-    for i in range(len(sites_data)):
+    for i in range(len(table)):
         neighbor = []
         for index in indices[i]:
-            neighbor.append(sites_data['stitle'][index])
+            neighbor.append(table.index[index])
         neighbor_list.append(neighbor)
 
     return pd.DataFrame(neighbor_list, index=table.index)
