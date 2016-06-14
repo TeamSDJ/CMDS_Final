@@ -52,35 +52,6 @@ def maximum_likelihood_estimation(doc_vecs, posterior, smooth_const):
 
 # tokenize texts
 
-
-def initialize_tokenizer():
-    import jieba
-    import jieba.analyse
-    import jieba.posseg as pseg
-    jieba.set_dictionary('dict.txt.big.txt')
-    jieba.enable_parallel(4)
-    jieba.analyse.set_stop_words('stop_words.txt')
-    jieba.analyse.set_idf_path('idf.txt.big.txt')
-    jieba.initialize()
-    stopwords = set([e.decode('utf8').splitlines()[0] for e in open('stop_words.txt','rb').readlines()])
-    return (stopwords,jieba)
-
-def tokenize(name,tokenizer):
-    (stopwords,jieba) = tokenizer
-    #jieba.enable_parallel(4)
-    try:
-        original_tokens = jieba.tokenize(name)
-    except ValueError:
-        print(name,'not a uni-code')
-        return
-    tokens = []
-    for term in original_tokens:
-        if term[0] in stopwords:
-            None
-        else:
-            tokens.append(term[0])
-
-    return tokens
 def common_words(c,k,V,condprob):
     import collections
     return collections.Counter(dict(zip(V,condprob[:,c].transpose().tolist()[0]))).most_common(k)
@@ -88,7 +59,6 @@ def common_words(c,k,V,condprob):
 def analysis(pd,title_data,cat_data,text_data,hfc=0.,lfc=0.):
     import collections
     import numpy as np
-
     # input : document classes array, documents texts
     # calculate conditional probability of each term in given a class
     # return
@@ -105,8 +75,8 @@ def analysis(pd,title_data,cat_data,text_data,hfc=0.,lfc=0.):
     cat_names = [e[0] for e in cat_data.values.tolist()]
     site_body = [e[0] for e in text_data.values.tolist()]
 
-    tokenizer = initialize_tokenizer()
-    site_body_tokens = [tokenize(sb,tokenizer) for sb in site_body]
+    stop_words = load_stop_words()
+    site_body_tokens = [tokenize(sb,stop_words) for sb in site_body]
 
     vocs = filter_words(collections.Counter(merge_lists(site_body_tokens)),hfc,lfc)
     V = list(vocs)
@@ -145,26 +115,17 @@ def analysis(pd,title_data,cat_data,text_data,hfc=0.,lfc=0.):
     doc_vec_table = pd.DataFrame(np.matrix(weighted_doc_vec_M),columns=site_names,index=V)
     return prior_table,condi_table,doc_cov_table,class_cov_table,doc_vec_table,weighted_doc_vec_table
 
+def k_nearest_neighbor(table, k):
+    from sklearn.neighbors import NearestNeighbors
+    import pandas as pd
+    nbrs = NearestNeighbors(n_neighbors=k, algorithm='ball_tree').fit(table)
+    distances, indices = nbrs.kneighbors(table)
+    indices
+    neighbor_list = []
+    for i in range(len(sites_data)):
+        neighbor = []
+        for index in indices[i]:
+            neighbor.append(sites_data['stitle'][index])
+        neighbor_list.append(neighbor)
 
-
-def plot_matrix(table):
-    import matplotlib.pyplot as plt
-    import numpy as np
-    M = np.matrix(table)
-    (W,H) = np.shape(M)
-    if(W==H):
-        np.fill_diagonal(M, 0.)
-    plt.imshow(M,interpolation='nearest')
-    plt.colorbar()
-    tick_marks_x = np.arange(len(list(table.columns)))
-    tick_marks_y = np.arange(len(list(table.index)))
-    plt.xticks(tick_marks_x, list(table.columns), rotation=45)
-    plt.yticks(tick_marks_y, list(table.index))
-    plt.show()
-
-def compare_table_values(table1,table2):
-    import matplotlib.pylab as plt
-    import numpy as np
-    (W,L) = np.shape(np.matrix(table1))
-    plt.scatter(np.reshape(np.matrix(table1),(W*L,1)),np.reshape(np.matrix(table2),(W*L,1)))
-    plt.show()
+    return pd.DataFrame(neighbor_list, index=table.index)
