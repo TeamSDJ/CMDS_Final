@@ -1,30 +1,7 @@
 
 #REVIEW functions for NB classifier
-def edition_distance(str1,str2):
-    import numpy as np
-    M = np.zeros((len(str1)+1,len(str2)+1),int)
-    #initialize the first rol and col
-    for i in range(len(str1)+1):
-        M[i,0]=i
-    for i in range(len(str2)+1):
-        M[0,i]=i
-    #generate dynamic programming matrix
-    for i in range(len(str1)):
-        for j in range(len(str2)):
-            M[i+1,j+1]=min(M[i,j]+(0 if str1[i]==str2[j] else 1), M[i,j+1]+1,M[i+1,j]+1)
+from util_package import *
 
-    result = M[-1,-1]
-    return result
-
-def generate_combination(tokens):
-    combs = []
-    for i in range(len(tokens)):
-        for j in range(i+1):
-            combs.append(''.join(tokens[0+j:len(tokens)-i+j]))
-    return combs
-
-def merge_lists(lists):
-    return [item for sublist in lists for item in sublist]
 def filter_words(voc_count, fc_h, fc_l):
     import collections
     N = len(voc_count)

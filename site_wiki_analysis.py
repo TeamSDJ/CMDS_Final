@@ -11,40 +11,37 @@ import pandas as pd
 
 sites_data = pd.read_excel('sitedata.xlsx', 'Section',
                            index_col='Section_Id', na_values=['NA'])
-id_map = pd.read_excel('sitedata.xlsx', 'file',
-                       index_col='Section_Id', na_values=['NA'])
-img_url = pd.read_excel('sitedata.xlsx', 'img',
-                        index_col='file_Id', na_values=['NA'])
-audio_url = pd.read_excel('sitedata.xlsx', 'audio',
-                          index_col='file_Id', na_values=['NA'])
-video_url = pd.read_excel('sitedata.xlsx', 'video',
-                          index_col='file_Id', na_values=['NA'])
 
+# REVIEW: constructing wiki pages as document string differently
+from analysis_package import *
+from util_package import *
 
-# REVIEW: constructing wiki pages string for each documents
-from classification_package import *
-
+# use the wiki page summary as document for each site terms
 wiki_summaries = []
 for title in sites_data[['stitle']].values:
     wiki_summaries.append("".join([attribute['summary']
                                    for attribute in wiki_pages[title[0]].values()]))
 
+# use the wiki page subtile as document for each site terms
 wiki_subtitles = []
 for title in sites_data[['stitle']].values:
     wiki_subtitles.append("。".join(merge_lists([list(dict(
         attribute['sections']).keys()) for attribute in wiki_pages[title[0]].values()])))
 
-
+# use the whole wiki page as document for each site terms
+# including the title, the sub-titles, the summary content and the
+# contents of each sub-titles.
 wiki_whole_page = []
-# each document include its title, summary of each title terms, sub-titles
-# of each title terms, sub-title content of each title terms
 for title in sites_data[['stitle']].values:
     wiki_whole_page.append(
-        "。".join([title[0]] + [attribute['summary'] for attribute in wiki_pages[title[0]].values()] + merge_lists(
+        "。".join([title[0]] + [attribute['summary'] for attribute in wiki_pages[title[0]].values()] +  # title + summary
+                 merge_lists(
+            # + subtitles
             [list(dict(attribute['sections']).keys()) for attribute in wiki_pages[title[0]].values()] +
-            [list(dict(attribute['sections']).values()) for attribute in wiki_pages[title[0]].values()]))
+            [list(dict(attribute['sections']).values()) for attribute in wiki_pages[title[0]].values()]))  # + the contents of each sub-titles
     )
 
+# use the terms that are annotated with links as documents for each site terms
 from hanziconv import HanziConv
 wiki_links = []
 for title in sites_data[['stitle']].values:
@@ -57,14 +54,18 @@ for title in sites_data[['stitle']].values:
 
 
 # REVIEW : data analysis
-
-import pandas as pd
-import numpy as np
-
 # supervised learning
 # title_data,cat_data,text_data=sites_data[['stitle']],sites_data[['CAT2']],sites_data[['stitle']]
 #hfc = 0.
 #lfc = 0.
+
+# Below, we generate class prior vector, class-term matrix, covariance
+# matrices of documents and classes,  document vectors and weighted
+# document vectors.
+
+# In input, we gives the index of each training data, the label of each training data, and the document content of each training data
+
+# Here we supvisedly use classes as labels.
 prior_table1, condi_table1, doc_cov_table1, class_cov_table1, doc_vec_table1, w_doc_vec_table1 = analysis(
     pd, sites_data[['stitle']], sites_data[['CAT2']], sites_data[['stitle']], 0., 0.)
 prior_table2, condi_table2, doc_cov_table2, class_cov_table2, doc_vec_table2, w_doc_vec_table2 = analysis(
@@ -78,7 +79,8 @@ prior_table5, condi_table5, doc_cov_table5, class_cov_table5, doc_vec_table5, w_
 prior_table6, condi_table6, doc_cov_table6, class_cov_table6, doc_vec_table6, w_doc_vec_table6 = analysis(
     pd, sites_data[['stitle']], sites_data[['CAT2']], pd.DataFrame(wiki_links), 0.0, 0.)
 
-# unsupervised learning
+
+# Here we un-supvisedly use data index as labels. 
 prior_table11, condi_table11, doc_cov_table11, class_cov_table11, doc_vec_table11, w_doc_vec_table11 = analysis(
     pd, sites_data[['stitle']], sites_data[['stitle']], sites_data[['stitle']], 0., 0.)
 prior_table12, condi_table12, doc_cov_table12, class_cov_table12, doc_vec_table12, w_doc_vec_table12 = analysis(
@@ -242,7 +244,7 @@ plot_word_embedding(plt, site_2d, num=6, labels=sites_data[['CAT2']])
 plt.show()
 
 
-def k_nearest_neighbor(table,k):
+def k_nearest_neighbor(table, k):
     from sklearn.neighbors import NearestNeighbors
     import pandas as pd
     nbrs = NearestNeighbors(n_neighbors=k, algorithm='ball_tree').fit(table)
@@ -255,12 +257,12 @@ def k_nearest_neighbor(table,k):
             neighbor.append(sites_data['stitle'][index])
         neighbor_list.append(neighbor)
 
-    return pd.DataFrame(neighbor_list,index=table.index)
+    return pd.DataFrame(neighbor_list, index=table.index)
 
-k_nearest_neighbor(w_doc_vec_table5.transpose(),5)
+k_nearest_neighbor(w_doc_vec_table5.transpose(), 5)
 
 
-compare_table_values(condi_table11,w_doc_vec_table11)
+compare_table_values(condi_table11, w_doc_vec_table11)
 compare_table_values(doc_cov_table5, doc_cov_table4)
 
 # do k nearest neighbor query to test the good or bad of embedding !
@@ -268,7 +270,6 @@ import six.moves.cPickle as cPickle
 import nearpy
 w_doc_vec_
 # an embedding consider all info
-
 
 
 import numpy as np
