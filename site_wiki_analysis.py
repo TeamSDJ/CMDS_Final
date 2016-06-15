@@ -173,7 +173,7 @@ plt.show()
 # in order to check if the vector space can gives reasonable similar sites.
 # By the method below, we were able to check the local structure of each
 # vector space.
-k = 5
+k = 100
 # NOTE:First, we use the conditional probability or importance of terms given document as vector element,
 # which is obtain during the unsupvervised NB training phase.
 unsup_condis_neighbors = []
@@ -194,9 +194,57 @@ for table in sup_w_doc_vecs:
 # un-supervised-generated conditional probability of term over all documents.
 unsup_w_doc_vecs_neighbors = []
 for table in unsup_w_doc_vecs:
-    unsup_doc_vecs_neighbors.append(k_nearest_neighbor(table.transpose(), k))
+    unsup_w_doc_vecs_neighbors.append(k_nearest_neighbor(table.transpose(), k))
 unsup_doc_covs_neighbors = []
 for table in unsup_doc_covs:
     unsup_doc_covs_neighbors.append(k_nearest_neighbor(table.transpose(), k))
 
 # TODO: how to compare two ranking list ?
+from measures.rankedlist import *
+def compare_two_ranking_lists(table1,table2):
+    import numpy as np
+    scores = []
+    for i in range(len(np.array(table1[0]))):
+        scores.append(RBO.score(np.array(table1)[i].tolist(), np.array(table2)[i].tolist()))
+    return sum(scores)/len(np.array(table1[0]))
+
+
+def local_similarity(embeddings):
+    k = len(embeddings)
+    scores_matrix = np.zeros((k,k))
+    for i in range(k):
+        for j in range(k):
+            scores_matrix[i,j]=compare_two_ranking_lists(embeddings[i],embeddings[j])
+    return scores_matrix
+
+unsup_condis_sim_M = local_similarity(unsup_condis_neighbors)
+unsup_doc_vecs_sim_M = local_similarity(unsup_doc_vecs_neighbors)
+unsup_w_doc_vecs_sim_M = local_similarity(unsup_w_doc_vecs_neighbors)
+sup_w_doc_vecs_sim_M = local_similarity(sup_w_doc_vecs_neighbors)
+unsup_doc_covs_sim_M = local_similarity(unsup_doc_covs_neighbors)
+
+# REVIEW:visualize local similarity matrix of each kind of embeddings
+def plot_np_matrix(M):
+    import matplotlib.pylab as plt
+    np.fill_diagonal(M, 0.)
+    plt.imshow(M,interpolation='nearest')
+    plt.colorbar()
+
+
+plt.figure(1)
+plot_np_matrix(unsup_doc_vecs_sim_M)
+plt.figure(2)
+plot_np_matrix(unsup_doc_covs_sim_M)
+plt.figure(12)
+plot_np_matrix(unsup_doc_vecs_sim_M-unsup_doc_covs_sim_M)
+plt.figure(3)
+plot_np_matrix(unsup_condis_sim_M)
+plt.figure(4)
+plot_np_matrix(sup_w_doc_vecs_sim_M)
+plt.figure(5)
+plot_np_matrix(unsup_w_doc_vecs_sim_M)
+plt.figure(45)
+plot_np_matrix(sup_w_doc_vecs_sim_M-unsup_w_doc_vecs_sim_M)
+# using unsupervised weighted doc vec as embedding is the same as supervised weighted doc vec
+# => the weighted are the same no matter supevising label or not.
+plt.show()

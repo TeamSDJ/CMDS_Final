@@ -15,6 +15,8 @@ def plot_matrix(table):
     plt.yticks(tick_marks_y, list(table.index))
     plt.show()
 
+
+
 def compare_table_values(table1,table2):
     import matplotlib.pylab as plt
     import numpy as np
