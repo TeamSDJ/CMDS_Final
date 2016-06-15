@@ -104,7 +104,7 @@ prior_table16, condi_table16, doc_cov_table16, class_cov_table16, doc_vec_table1
 #  x = 6 : using wiki links
 
 
-# REVIEW: Visualizing and Evaluating the result for explorative analysis. 
+# REVIEW: Visualizing and Evaluating the result for explorative analysis.
 # here, we use several ways to visualize or generate result,
 # in order to understand if the document vector are reasonable.
 
@@ -237,3 +237,6 @@ k_nearest_neighbor(w_doc_vec_table13.transpose(), 5)
 k_nearest_neighbor(w_doc_vec_table14.transpose(), 5)
 k_nearest_neighbor(w_doc_vec_table15.transpose(), 5)
 k_nearest_neighbor(w_doc_vec_table16.transpose(), 5)
+
+
+#TODO: how to compare two ranking list ? 
