@@ -40,7 +40,8 @@ for title in sites_data[['stitle']].values:
             [list(dict(attribute['sections']).values()) for attribute in wiki_pages[title[0]].values()]))  # + the contents of each sub-titles
     )
 
-# NOTE:use the terms that are annotated with links as documents for each site terms
+# NOTE:use the terms that are annotated with links as documents for each
+# site terms
 from hanziconv import HanziConv
 wiki_links = []
 for title in sites_data[['stitle']].values:
@@ -60,48 +61,55 @@ for title in sites_data[['stitle']].values:
 # document vectors.
 
 # @NOTE:For input, we gives the index of each training data, the label of each
-# training data, and the document content of each training data
-
+# training data, and the document content of each training data.
+# Also, the cutoff frequecy for filtering the vocaburary words are predefined for each kind of documents.
+documents = [sites_data[['stitle']], sites_data[['xbody']],
+             pd.DataFrame(wiki_summaries), pd.DataFrame(wiki_subtitles), pd.DataFrame(wiki_whole_page), pd.DataFrame(wiki_links)]
+hfcs = [0.,0.05,0.01,0.1,0.01,0.]
+lfcs = [0.,0.2,0.2,0.,0.2,0.]
 # NOTE:Supervised Learning :
+sup_priors = []
+sup_condis = []
+sup_doc_covs = []
+sup_class_covs = []
+sup_doc_vecs = []
+sup_w_doc_vecs = []
 # Here we supvisedly use classes as labels.
-prior_table1, condi_table1, doc_cov_table1, class_cov_table1, doc_vec_table1, w_doc_vec_table1 = analysis(
-    pd, sites_data[['stitle']], sites_data[['CAT2']], sites_data[['stitle']], 0., 0.)
-prior_table2, condi_table2, doc_cov_table2, class_cov_table2, doc_vec_table2, w_doc_vec_table2 = analysis(
-    pd, sites_data[['stitle']], sites_data[['CAT2']], sites_data[['xbody']], 0.05, 0.2)
-prior_table3, condi_table3, doc_cov_table3, class_cov_table3, doc_vec_table3, w_doc_vec_table3 = analysis(
-    pd, sites_data[['stitle']], sites_data[['CAT2']], pd.DataFrame(wiki_summaries), 0.01, 0.2)
-prior_table4, condi_table4, doc_cov_table4, class_cov_table4, doc_vec_table4, w_doc_vec_table4 = analysis(
-    pd, sites_data[['stitle']], sites_data[['CAT2']], pd.DataFrame(wiki_subtitles), 0.1, 0.0)
-prior_table5, condi_table5, doc_cov_table5, class_cov_table5, doc_vec_table5, w_doc_vec_table5 = analysis(
-    pd, sites_data[['stitle']], sites_data[['CAT2']], pd.DataFrame(wiki_whole_page), 0.01, 0.2)
-prior_table6, condi_table6, doc_cov_table6, class_cov_table6, doc_vec_table6, w_doc_vec_table6 = analysis(
-    pd, sites_data[['stitle']], sites_data[['CAT2']], pd.DataFrame(wiki_links), 0.0, 0.)
-
+for i in range(len(documents)):
+    prior_table, condi_table, doc_cov_table, class_cov_table, doc_vec_table, w_doc_vec_table = analysis(
+    pd, sites_data[['stitle']], sites_data[['CAT2']], documents[i], hfcs[i],lfcs[i])
+    sup_priors.append(prior_table)
+    sup_condis.append(condi_table)
+    sup_doc_covs.append(doc_cov_table)
+    sup_class_covs.append(class_cov_table)
+    sup_doc_vecs.append(doc_vec_table)
+    sup_w_doc_vecs.append(w_doc_vec_table)
 # NOTE:Unsupervised Learning :
+unsup_priors = []
+unsup_condis = []
+unsup_doc_covs = []
+unsup_class_covs = []
+unsup_doc_vecs = []
+unsup_w_doc_vecs = []
 # Here we un-supvisedly use data index as labels.
-prior_table11, condi_table11, doc_cov_table11, class_cov_table11, doc_vec_table11, w_doc_vec_table11 = analysis(
-    pd, sites_data[['stitle']], sites_data[['stitle']], sites_data[['stitle']], 0., 0.)
-prior_table12, condi_table12, doc_cov_table12, class_cov_table12, doc_vec_table12, w_doc_vec_table12 = analysis(
-    pd, sites_data[['stitle']], sites_data[['stitle']], sites_data[['xbody']], 0.05, 0.2)
-prior_table13, condi_table13, doc_cov_table13, class_cov_table13, doc_vec_table13, w_doc_vec_table13 = analysis(
-    pd, sites_data[['stitle']], sites_data[['stitle']], pd.DataFrame(wiki_summaries), 0.01, 0.2)
-prior_table14, condi_table14, doc_cov_table14, class_cov_table14, doc_vec_table14, w_doc_vec_table14 = analysis(
-    pd, sites_data[['stitle']], sites_data[['stitle']], pd.DataFrame(wiki_subtitles), 0.05, 0.3)
-prior_table15, condi_table15, doc_cov_table15, class_cov_table15, doc_vec_table15, w_doc_vec_table15 = analysis(
-    pd, sites_data[['stitle']], sites_data[['stitle']], pd.DataFrame(wiki_whole_page), 0.05, 0.5)
-prior_table16, condi_table16, doc_cov_table16, class_cov_table16, doc_vec_table16, w_doc_vec_table16 = analysis(
-    pd, sites_data[['stitle']], sites_data[['stitle']], pd.DataFrame(wiki_links), 0.00, 0.0)
+for i in range(len(documents)):
+    prior_table, condi_table, doc_cov_table, class_cov_table, doc_vec_table, w_doc_vec_table = analysis(
+    pd, sites_data[['stitle']], sites_data[['stitle']], documents[i], hfcs[i],lfcs[i])
+    unsup_priors.append(prior_table)
+    unsup_condis.append(condi_table)
+    unsup_doc_covs.append(doc_cov_table)
+    unsup_class_covs.append(class_cov_table)
+    unsup_doc_vecs.append(doc_vec_table)
+    unsup_w_doc_vecs.append(w_doc_vec_table)
 
 # XXX:
-# 'XXX_table1x' with x from 1~6 meaning unsupvervised method
-# 'XXX_tablex' with x from 1~6 meaning supervised method
-#  x from 1~6 meaning different strings of document as input :
-#  x = 1 : using title
-#  x = 2 : using xbody from site database
-#  x = 3 : using wiki summary
-#  x = 4 : using wiki subtitles
-#  x = 5 : using whole wiki page
-#  x = 6 : using wiki links
+#  index from 1~6 meaning different strings of document as input :
+#  index = 1 : using title
+#  index = 2 : using xbody from site database
+#  index = 3 : using wiki summary
+#  index = 4 : using wiki subtitles
+#  index = 5 : using whole wiki page
+#  index = 6 : using wiki links
 
 
 # REVIEW: Visualizing and Evaluating the result for explorative analysis.
@@ -111,17 +119,13 @@ prior_table16, condi_table16, doc_cov_table16, class_cov_table16, doc_vec_table1
 from visualize_package import *
 
 # @NOTE: plot the generated matrix :
-plot_matrix(class_cov_table1 > (class_cov_table1 +
-                                class_cov_table2 + class_cov_table3) / 3)
-plot_matrix(class_cov_table2 > (class_cov_table1 +
-                                class_cov_table2 + class_cov_table3) / 3)
-plot_matrix(class_cov_table3 > (class_cov_table1 +
-                                class_cov_table2 + class_cov_table3) / 3)
-plot_matrix(class_cov_table4)
-plot_matrix(class_cov_table5)
-
+for class_cov_table in sup_class_covs:
+    plot_matrix(class_cov_table)
+for class_cov_table in unsup_class_covs:
+    plot_matrix(class_cov_table)
 # @NOTE: compare the value of two matrix of same shape,
-# and scatter the values in 2D space in order to understand the relationship of two matrix.
+# and scatter the values in 2D space in order to understand the
+# relationship of two matrix.
 compare_table_values(condi_table11, w_doc_vec_table11)
 compare_table_values(doc_cov_table5, doc_cov_table4)
 
@@ -131,112 +135,66 @@ compare_table_values(doc_cov_table5, doc_cov_table4)
 
 # NOTE:First, we use the conditional probability or importance of terms given document as vector element,
 # which is obtain during the unsupvervised NB training phase.
-
-site_2d = dimension_reduction(condi_table11.transpose())
-plot_word_embedding(plt, site_2d, num=1, labels=sites_data[['CAT2']])
-site_2d = dimension_reduction(condi_table12.transpose())
-plot_word_embedding(plt, site_2d, num=2, labels=sites_data[['CAT2']])
-site_2d = dimension_reduction(condi_table13.transpose())
-plot_word_embedding(plt, site_2d, num=3, labels=sites_data[['CAT2']])
-site_2d = dimension_reduction(condi_table14.transpose())
-plot_word_embedding(plt, site_2d, num=4, labels=sites_data[['CAT2']])
-site_2d = dimension_reduction(condi_table15.transpose())
-plot_word_embedding(plt, site_2d, num=5, labels=sites_data[['CAT2']])
-site_2d = dimension_reduction(condi_table16.transpose())
-plot_word_embedding(plt, site_2d, num=6, labels=sites_data[['CAT2']])
+for i in range(len(unsup_condis)):
+    site_2d = dimension_reduction(unsup_condis[i].transpose())
+    plot_word_embedding(plt, site_2d, num=i, labels=sites_data[['CAT2']])
 plt.show()
 
 # NOTE:Second, we use the term count of each document as vector element.
-import matplotlib.pylab as plt
-site_2d = dimension_reduction(doc_vec_table1.transpose())
-plot_word_embedding(plt, site_2d, num=1, labels=sites_data[['CAT2']])
-site_2d = dimension_reduction(doc_vec_table2.transpose())
-plot_word_embedding(plt, site_2d, num=2, labels=sites_data[['CAT2']])
-site_2d = dimension_reduction(doc_vec_table3.transpose())
-plot_word_embedding(plt, site_2d, num=3, labels=sites_data[['CAT2']])
-site_2d = dimension_reduction(doc_vec_table4.transpose())
-plot_word_embedding(plt, site_2d, num=4, labels=sites_data[['CAT2']])
-site_2d = dimension_reduction(doc_vec_table5.transpose())
-plot_word_embedding(plt, site_2d, num=5, labels=sites_data[['CAT2']])
-site_2d = dimension_reduction(doc_vec_table6.transpose())
-plot_word_embedding(plt, site_2d, num=6, labels=sites_data[['CAT2']])
+for i in range(len(unsup_doc_vecs)):
+    site_2d = dimension_reduction(unsup_doc_vecs[i].transpose())
+    plot_word_embedding(plt, site_2d, num=i, labels=sites_data[['CAT2']])
 plt.show()
 
 # NOTE:Third, we use the over-classes-summed-conditional-probability-weighted term counts as vector element,
 # where each weight on each term is calculated by summing all
 # supervised-generated conditional probability of term over all classes.
-
-import matplotlib.pylab as plt
-site_2d = dimension_reduction(w_doc_vec_table1.transpose())
-plot_word_embedding(plt, site_2d, num=1, labels=sites_data[['CAT2']])
-site_2d = dimension_reduction(w_doc_vec_table2.transpose())
-plot_word_embedding(plt, site_2d, num=2, labels=sites_data[['CAT2']])
-site_2d = dimension_reduction(w_doc_vec_table3.transpose())
-plot_word_embedding(plt, site_2d, num=3, labels=sites_data[['CAT2']])
-site_2d = dimension_reduction(w_doc_vec_table4.transpose())
-plot_word_embedding(plt, site_2d, num=4, labels=sites_data[['CAT2']])
-site_2d = dimension_reduction(w_doc_vec_table5.transpose())
-plot_word_embedding(plt, site_2d, num=5, labels=sites_data[['CAT2']])
-site_2d = dimension_reduction(w_doc_vec_table6.transpose())
-plot_word_embedding(plt, site_2d, num=6, labels=sites_data[['CAT2']])
+for i in range(len(sup_w_doc_vecs)):
+    site_2d = dimension_reduction(sup_w_doc_vecs[i].transpose())
+    plot_word_embedding(plt, site_2d, num=i, labels=sites_data[['CAT2']])
 plt.show()
 
 # NOTE:Forth, we use the over-document-summed-conditional-probability-weighted term counts as vector element,
 # where each weights on each term is calculated by summing all
 # un-supervised-generated conditional probability of term over all documents.
-
-import matplotlib.pylab as plt
-site_2d = dimension_reduction(w_doc_vec_table11.transpose())
-plot_word_embedding(plt, site_2d, num=1, labels=sites_data[['CAT2']])
-site_2d = dimension_reduction(w_doc_vec_table12.transpose())
-plot_word_embedding(plt, site_2d, num=2, labels=sites_data[['CAT2']])
-site_2d = dimension_reduction(w_doc_vec_table13.transpose())
-plot_word_embedding(plt, site_2d, num=3, labels=sites_data[['CAT2']])
-site_2d = dimension_reduction(w_doc_vec_table14.transpose())
-plot_word_embedding(plt, site_2d, num=4, labels=sites_data[['CAT2']])
-site_2d = dimension_reduction(w_doc_vec_table15.transpose())
-plot_word_embedding(plt, site_2d, num=5, labels=sites_data[['CAT2']])
-site_2d = dimension_reduction(w_doc_vec_table16.transpose())
-plot_word_embedding(plt, site_2d, num=6, labels=sites_data[['CAT2']])
+for i in range(len(unsup_w_doc_vecs)):
+    site_2d = dimension_reduction(unsup_w_doc_vecs[i].transpose())
+    plot_word_embedding(plt, site_2d, num=i, labels=sites_data[['CAT2']])
+plt.show()
+# NOTE:Fifth, we use the rows of document covariance matrix generated from term count as document vector,
+for i in range(len(unsup_doc_covs)):
+    site_2d = dimension_reduction(unsup_doc_covs[i].transpose())
+    plot_word_embedding(plt, site_2d, num=i, labels=sites_data[['CAT2']])
 plt.show()
 
 # @NOTE:Then, we try to find similar sites for each vector space using K nearset neighborhood,
 # in order to check if the vector space can gives reasonable similar sites.
-# By the method below, we were able to check the local structure of each vector space.
-
+# By the method below, we were able to check the local structure of each
+# vector space.
+k = 5
 # NOTE:First, we use the conditional probability or importance of terms given document as vector element,
 # which is obtain during the unsupvervised NB training phase.
-k_nearest_neighbor(condi_table11.transpose(), 5)
-k_nearest_neighbor(condi_table12.transpose(), 5)
-k_nearest_neighbor(condi_table13.transpose(), 5)
-k_nearest_neighbor(condi_table14.transpose(), 5)
-k_nearest_neighbor(condi_table15.transpose(), 5)
-k_nearest_neighbor(condi_table16.transpose(), 5)
+unsup_condis_neighbors = []
+for table in unsup_condis:
+    unsup_condis_neighbors.append(k_nearest_neighbor(table.transpose(),k))
 # NOTE:Second, we use the term count of each document as vector element.
-k_nearest_neighbor(doc_vec_table1.transpose(), 5)
-k_nearest_neighbor(doc_vec_table2.transpose(), 5)
-k_nearest_neighbor(doc_vec_table3.transpose(), 5)
-k_nearest_neighbor(doc_vec_table4.transpose(), 5)
-k_nearest_neighbor(doc_vec_table5.transpose(), 5)
-k_nearest_neighbor(doc_vec_table6.transpose(), 5)
+unsup_doc_vecs_neighbors = []
+for table in unsup_doc_vecs:
+    unsup_doc_vecs_neighbors.append(k_nearest_neighbor(table.transpose(),k))
 # NOTE:Third, we use the over-classes-summed-conditional-probability-weighted term counts as vector element,
 # where each weight on each term is calculated by summing all
 # supervised-generated conditional probability of term over all classes.
-k_nearest_neighbor(w_doc_vec_table1.transpose(), 5)
-k_nearest_neighbor(w_doc_vec_table2.transpose(), 5)
-k_nearest_neighbor(w_doc_vec_table3.transpose(), 5)
-k_nearest_neighbor(w_doc_vec_table4.transpose(), 5)
-k_nearest_neighbor(w_doc_vec_table5.transpose(), 5)
-k_nearest_neighbor(w_doc_vec_table6.transpose(), 5)
+sup_w_doc_vecs_neighbors = []
+for table in sup_w_doc_vecs:
+    sup_w_doc_vecs_neighbors.append(k_nearest_neighbor(table.transpose(),k))
 # NOTE:Forth, we use the over-document-summed-conditional-probability-weighted term counts as vector element,
 # where each weights on each term is calculated by summing all
 # un-supervised-generated conditional probability of term over all documents.
-k_nearest_neighbor(w_doc_vec_table11.transpose(), 5)
-k_nearest_neighbor(w_doc_vec_table12.transpose(), 5)
-k_nearest_neighbor(w_doc_vec_table13.transpose(), 5)
-k_nearest_neighbor(w_doc_vec_table14.transpose(), 5)
-k_nearest_neighbor(w_doc_vec_table15.transpose(), 5)
-k_nearest_neighbor(w_doc_vec_table16.transpose(), 5)
+unsup_w_doc_vecs_neighbors = []
+for table in unsup_w_doc_vecs:
+    unsup_doc_vecs_neighbors.append(k_nearest_neighbor(table.transpose(),k))
+unsup_doc_covs_neighbors = []
+for table in unsup_doc_covs:
+    unsup_doc_covs_neighbors.append(k_nearest_neighbor(table.transpose(),k))
 
-
-#TODO: how to compare two ranking list ? 
+# TODO: how to compare two ranking list ?
