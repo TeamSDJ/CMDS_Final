@@ -62,11 +62,12 @@ for title in sites_data[['stitle']].values:
 
 # @NOTE:For input, we gives the index of each training data, the label of each
 # training data, and the document content of each training data.
-# Also, the cutoff frequecy for filtering the vocaburary words are predefined for each kind of documents.
+# Also, the cutoff frequecy for filtering the vocaburary words are
+# predefined for each kind of documents.
 documents = [sites_data[['stitle']], sites_data[['xbody']],
              pd.DataFrame(wiki_summaries), pd.DataFrame(wiki_subtitles), pd.DataFrame(wiki_whole_page), pd.DataFrame(wiki_links)]
-hfcs = [0.,0.05,0.01,0.1,0.01,0.]
-lfcs = [0.,0.2,0.2,0.,0.2,0.]
+hfcs = [0., 0.05, 0.01, 0.1, 0.01, 0.]
+lfcs = [0., 0.2, 0.2, 0., 0.2, 0.]
 # NOTE:Supervised Learning :
 sup_priors = []
 sup_condis = []
@@ -77,7 +78,7 @@ sup_w_doc_vecs = []
 # Here we supvisedly use classes as labels.
 for i in range(len(documents)):
     prior_table, condi_table, doc_cov_table, class_cov_table, doc_vec_table, w_doc_vec_table = analysis(
-    pd, sites_data[['stitle']], sites_data[['CAT2']], documents[i], hfcs[i],lfcs[i])
+        pd, sites_data[['stitle']], sites_data[['CAT2']], documents[i], hfcs[i], lfcs[i])
     sup_priors.append(prior_table)
     sup_condis.append(condi_table)
     sup_doc_covs.append(doc_cov_table)
@@ -94,7 +95,7 @@ unsup_w_doc_vecs = []
 # Here we un-supvisedly use data index as labels.
 for i in range(len(documents)):
     prior_table, condi_table, doc_cov_table, class_cov_table, doc_vec_table, w_doc_vec_table = analysis(
-    pd, sites_data[['stitle']], sites_data[['stitle']], documents[i], hfcs[i],lfcs[i])
+        pd, sites_data[['stitle']], sites_data[['stitle']], documents[i], hfcs[i], lfcs[i])
     unsup_priors.append(prior_table)
     unsup_condis.append(condi_table)
     unsup_doc_covs.append(doc_cov_table)
@@ -161,7 +162,8 @@ for i in range(len(unsup_w_doc_vecs)):
     site_2d = dimension_reduction(unsup_w_doc_vecs[i].transpose())
     plot_word_embedding(plt, site_2d, num=i, labels=sites_data[['CAT2']])
 plt.show()
-# NOTE:Fifth, we use the rows of document covariance matrix generated from term count as document vector,
+# NOTE:Fifth, we use the rows of document covariance matrix generated from
+# term count as document vector,
 for i in range(len(unsup_doc_covs)):
     site_2d = dimension_reduction(unsup_doc_covs[i].transpose())
     plot_word_embedding(plt, site_2d, num=i, labels=sites_data[['CAT2']])
@@ -176,25 +178,25 @@ k = 5
 # which is obtain during the unsupvervised NB training phase.
 unsup_condis_neighbors = []
 for table in unsup_condis:
-    unsup_condis_neighbors.append(k_nearest_neighbor(table.transpose(),k))
+    unsup_condis_neighbors.append(k_nearest_neighbor(table.transpose(), k))
 # NOTE:Second, we use the term count of each document as vector element.
 unsup_doc_vecs_neighbors = []
 for table in unsup_doc_vecs:
-    unsup_doc_vecs_neighbors.append(k_nearest_neighbor(table.transpose(),k))
+    unsup_doc_vecs_neighbors.append(k_nearest_neighbor(table.transpose(), k))
 # NOTE:Third, we use the over-classes-summed-conditional-probability-weighted term counts as vector element,
 # where each weight on each term is calculated by summing all
 # supervised-generated conditional probability of term over all classes.
 sup_w_doc_vecs_neighbors = []
 for table in sup_w_doc_vecs:
-    sup_w_doc_vecs_neighbors.append(k_nearest_neighbor(table.transpose(),k))
+    sup_w_doc_vecs_neighbors.append(k_nearest_neighbor(table.transpose(), k))
 # NOTE:Forth, we use the over-document-summed-conditional-probability-weighted term counts as vector element,
 # where each weights on each term is calculated by summing all
 # un-supervised-generated conditional probability of term over all documents.
 unsup_w_doc_vecs_neighbors = []
 for table in unsup_w_doc_vecs:
-    unsup_doc_vecs_neighbors.append(k_nearest_neighbor(table.transpose(),k))
+    unsup_doc_vecs_neighbors.append(k_nearest_neighbor(table.transpose(), k))
 unsup_doc_covs_neighbors = []
 for table in unsup_doc_covs:
-    unsup_doc_covs_neighbors.append(k_nearest_neighbor(table.transpose(),k))
+    unsup_doc_covs_neighbors.append(k_nearest_neighbor(table.transpose(), k))
 
 # TODO: how to compare two ranking list ?
