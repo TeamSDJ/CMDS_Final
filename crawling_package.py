@@ -61,4 +61,17 @@ def convert_to_strings(wikipage):
         links = wikipage.links
     except:
         links = None
-    return {'title': wikipage.title, 'summary': summary, 'sections': sections, 'links': links}
+    try:
+        categories = wikipage.categories
+    except:
+        categories = None
+    try:
+        coordinates = wikipage.coordinates
+    except:
+        coordinates = None
+    try:
+        references = wikipage.references
+    except:
+        references = None
+
+    return {'title': wikipage.title, 'summary': summary, 'sections': sections, 'links': links,'categories':categories,'coordinates':coordinates,'references':references}

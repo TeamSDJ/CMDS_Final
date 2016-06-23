@@ -101,9 +101,9 @@ def analysis(pd,title_data,cat_data,text_data,hfc=0.,lfc=0.):
     weighted_doc_vec_M=body_vecs_M.toarray()*np.array(weights.tolist())
 
 
-    for i in range(len(cat_list)):
-        print(cat_list[i])
-        print(common_words(i,50,V,condprob))
+    #for i in range(len(cat_list)):
+    #    print(cat_list[i])
+    #    print(common_words(i,50,V,condprob))
 
     class_cov_M = np.cov(condprob.transpose())
     doc_cov_M = np.cov(body_vecs_M.toarray().transpose())

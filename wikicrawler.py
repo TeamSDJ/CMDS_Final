@@ -24,6 +24,9 @@ for site_name in site_names[0:1]:
         wiki_pages[key] = convert_to_strings(wiki_pages[key])
     site_pages[site_name] = wiki_pages
 
+wiki_pages
+
+site_names
 
 # REVIEW: store the crawled wiki pages as a serialized object in page.dat
 import six.moves.cPickle as pickle
