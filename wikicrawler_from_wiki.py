@@ -46,13 +46,12 @@ for key in child_sites.keys():
 all_sites=set(all_sites)
 
 
-# generate stopwords for better tokenization
-
 site_pages_dict = dict()
 for site_name in list(all_sites):
     try:
         wiki_page = wikipedia.page(site_name)
         site_pages_dict[site_name]=convert_to_strings(wiki_page)
+        print(site_name,'page loaded!')
     except:
         print('no wiki page for :',site_name)
 

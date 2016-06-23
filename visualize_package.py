@@ -15,8 +15,6 @@ def plot_matrix(table):
     plt.yticks(tick_marks_y, list(table.index))
     plt.show()
 
-
-
 def compare_table_values(table1,table2):
     import matplotlib.pylab as plt
     import numpy as np
@@ -34,7 +32,7 @@ def dimension_reduction(table):
     return pd.DataFrame(result, index=table.index)
 
 
-def plot_word_embedding(plt, table, labels=None, title='', num=1):
+def plot_word_embedding(plt, table, labels=None, title='', num=1,color_on=True,size_='x-small'):
     import numpy as np
     plt.figure(num)
     vectors = np.matrix(table).tolist()
@@ -62,12 +60,12 @@ def plot_word_embedding(plt, table, labels=None, title='', num=1):
         # plot points
         plt.scatter(point[0], point[1])
         # plot word annotations
-        if(type(labels) == type(None)):
+        if(type(labels) == type(None) or color_on==False):
 
             plt.annotate(
                 word,
                 xy=(point[0], point[1]),
-                size="x-small"
+                size=size_
             )
         else:
             label_index = label_set.index(
@@ -78,7 +76,7 @@ def plot_word_embedding(plt, table, labels=None, title='', num=1):
                 color='#' +
                 "".join(list(map(lambda x: format(x, '#04x')
                                  [2:], colors[label_index]))).upper(),
-                size="x-small"
+                size=size_
             )
 
     plt.tight_layout()
