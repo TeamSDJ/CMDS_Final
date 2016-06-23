@@ -295,7 +295,7 @@ plot_word_embedding(plt, info_2d, num=4, labels=pd.DataFrame(indexes),color_on=F
 plt.show()
 
 
-matrix_name = ['coditional weighted','term count weighted','term count','term count covariance']
+matrix_name = ['conditional weighted','term count weighted','term count','term count covariance']
 for k in range(6):
     plt.figure(k)
     all_doc_em_sim_M = local_similarity([unsup_condis_neighbors[k],unsup_w_doc_vecs_neighbors[k],unsup_doc_vecs_neighbors[k],unsup_doc_covs_neighbors[k]])
