@@ -58,5 +58,5 @@ for key in pages_dict.keys():
 import six.moves.cPickle as pickle
 
 # save data
-with open("taiwan_sites_page1.dat", "wb") as f:
+with open("taiwan_sites_page2.dat", "wb") as f:
     pickle.dump(url_dict, f, protocol=1)
