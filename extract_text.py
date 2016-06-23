@@ -24,7 +24,7 @@ def extract_text(url):
 	http = urllib3.PoolManager()
 	r = http.request("GET", url)
 	#r=http.request("GET", "http://l50740.pixnet.net/blog/post/43592029")
-	soup = BeautifulSoup(r.data,"html.parser") 
+	soup = BeautifulSoup(r.data,"html.parser")
 	span=soup.find_all('span')
 	word_delete=["標楷體","新細明體","微軟正黑體"]
 	word_delete_s=["粉絲專頁","粉絲團","歡迎","按讚","人氣","留言列表","關閉視窗","電話","住址","網址"]
@@ -32,7 +32,7 @@ def extract_text(url):
 	for line in span:
 		line_str=line.__str__()
 		if(_filter(line_str,word_delete_s)):#if sentence contains any of the word in "word_delete_s",discard the whole sentence
-			line_str=delete(line_str,word_delete)# delete garbage word 
+			line_str=delete(line_str,word_delete)# delete garbage word
 			for ch in line_str:
 				if isChinese(ch):
 					text=text+ch
@@ -41,8 +41,3 @@ def extract_text(url):
 if __name__=="__main__":
 	import sys
 	print(extract_text(str(sys.argv[1])))
-
-
-
-
-

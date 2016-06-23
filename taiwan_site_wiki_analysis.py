@@ -4,65 +4,80 @@
 import pickle
 import six.moves.cPickle as pickle
 # load data
-with open("pages.dat", 'rb') as f:
+with open("taiwan_sites.dat", 'rb') as f:
     wiki_pages = pickle.load(f)
 
-# REVIEW:Read in the site names and site data
-import pandas as pd
-sites_data = pd.read_excel('sitedata.xlsx', 'Section',
-                           index_col='Section_Id', na_values=['NA'])
+len(wiki_pages.keys())
+
+site_names = list(wiki_pages.keys())
+
+
+# REVIEW:check if the wiki_page is of site
 
 # @REVIEW: Constructing different document string using differnt wiki page content
 from analysis_package import *
-
+from hanziconv import HanziConv
 # NOTE:use the wiki page summary as document for each site terms
 wiki_summaries = []
-for title in sites_data[['stitle']].values:
-    wiki_summaries.append("".join([attribute['summary']
-                                   for attribute in wiki_pages[title[0]].values()]))
+for title in site_names:
+    wiki_summaries.append(HanziConv.toTraditional(wiki_pages[title]['summary']))
 
 # NOTE:use the wiki page subtile as document for each site terms
 wiki_subtitles = []
-for title in sites_data[['stitle']].values:
-    wiki_subtitles.append("。".join(merge_lists([list(dict(
-        attribute['sections']).keys()) for attribute in wiki_pages[title[0]].values()])))
+for title in site_names:
+    wiki_subtitles.append(HanziConv.toTraditional("。".join(list(wiki_pages[title]['sections'].keys()))))
+
+wiki_subtitles = []
+for title in site_names:
+    relevent_wiki_subtitles = []
+    for cat in wiki_pages[title]['sections'].keys():
+        cat = HanziConv.toTraditional(cat)
+        #if cat in ['參考連結','延伸閱讀','參考','參考文獻','資料來源','參考來源','參見','相關條目','參考資料','外部鏈結','外部連結','相關內容']:
+        if cat.count('參')>0 or cat.count('外部')>0 or cat.count('相關')>0 or cat.count('延伸')>0:
+
+            None
+        else:
+            #print(cat)
+            relevent_wiki_subtitles.append(cat)
+    wiki_subtitles.append(HanziConv.toTraditional("。".join(list(relevent_wiki_subtitles))))
+
 
 # NOTE:use the whole wiki page as document for each site terms
 # including the title, the sub-titles, the summary content and the
 # contents of each sub-titles.
 wiki_segs = []
-for title in sites_data[['stitle']].values:
-    wiki_segs.append(
-        "。".join(merge_lists(
-            # + subtitles
-            [list(dict(attribute['sections']).values()) for attribute in wiki_pages[title[0]].values()]))  # + the contents of each sub-titles
-    )
+for title in site_names:
+    wiki_segs.append(HanziConv.toTraditional("。".join(list(wiki_pages[title]['sections'].values()))))
 
-# NOTE:use the whole wiki page as document for each site terms
-# including the title, the sub-titles, the summary content and the
-# contents of each sub-titles.
-wiki_whole_page = []
-for title in sites_data[['stitle']].values:
-    wiki_whole_page.append(
-        "。".join([attribute['summary'] for attribute in wiki_pages[title[0]].values()] +  # title + summary
-                 merge_lists(
-            # + subtitles
-            [list(dict(attribute['sections']).keys()) for attribute in wiki_pages[title[0]].values()] +
-            [list(dict(attribute['sections']).values()) for attribute in wiki_pages[title[0]].values()]))  # + the contents of each sub-titles
-    )
+wiki_cats = []
+for title in site_names:
+    relevent_wiki_categories = []
+    for cat in wiki_pages[title]['categories']:
+        cat = HanziConv.toTraditional(cat)
+        if cat.count('維基')>0 or cat.count('頁面')>0 or cat.count('條目')>0 or cat.count('引文')>0:
+            #print(cat)
+            None
+        else:
+            relevent_wiki_categories.append(cat)
+    wiki_cats.append(HanziConv.toTraditional("。".join(list(relevent_wiki_categories))))
+
+
+
+wiki_links = []
+for title in site_names:
+    wiki_links.append(HanziConv.toTraditional("。".join(list(wiki_pages[title]['links']))))
+
+
+
+# generate references pages :
+# 痞客邦
+# xuite
+
+
+
 
 # NOTE:use the terms that are annotated with links as documents for each
 # site terms
-from hanziconv import HanziConv
-wiki_links = []
-for title in sites_data[['stitle']].values:
-    try:
-        string = HanziConv.toTraditional("。".join(merge_lists(
-            [attribute['links'] for attribute in wiki_pages[title[0]].values()])))
-        wiki_links.append(string)
-    except:
-        wiki_links.append("。")
-
 
 # @REVIEW : Data analysis
 
@@ -75,11 +90,11 @@ for title in sites_data[['stitle']].values:
 # training data, and the document content of each training data.
 # Also, the cutoff frequecy for filtering the vocaburary words are
 # predefined for each kind of documents.
-documents = [sites_data[['stitle']], sites_data[['xbody']],
-             pd.DataFrame(wiki_summaries), pd.DataFrame(wiki_subtitles), pd.DataFrame(wiki_segs), pd.DataFrame(wiki_links)]
+documents = [pd.DataFrame(wiki_summaries), pd.DataFrame(wiki_subtitles), pd.DataFrame(wiki_segs), pd.DataFrame(wiki_links), pd.DataFrame(wiki_cats)]
 
-hfcs = [0., 0.05, 0.01, 0.1, 0.01, 0.]
-lfcs = [0., 0.2, 0.2, 0., 0.2, 0.]
+
+hfcs = [0.]*len(documents)
+lfcs = [0.]*len(documents)
 # NOTE:Supervised Learning :
 sup_priors = []
 sup_condis = []
