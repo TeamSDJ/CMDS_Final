@@ -1,3 +1,6 @@
+# NOTE: crawling url from bing using site name with " 痞客邦 pixnet" or "隨意窩 Xuite日誌"
+
+
 import pickle
 import six.moves.cPickle as pickle
 # load data
