@@ -13,7 +13,7 @@ from py_bing_search import PyBingWebSearch
 count = 0
 for site_name in site_names:
     count = count + 1
-    print(count)
+    print(count,site_name)
     # hkxX68ZPyntLT6qdbLnlbk6NqXCv5fQadYm0BGSUER8
     bing_web = PyBingWebSearch(
         'hkxX68ZPyntLT6qdbLnlbk6NqXCv5fQadYm0BGSUER8','"'+site_name+'"'+' 痞客邦 pixnet')
@@ -35,13 +35,12 @@ with open("taiwan_sites_page1.dat", "wb") as f:
     pickle.dump(url_dict, f, protocol=1)
 
 
-
 pages_dict = dict()
 from py_bing_search import PyBingWebSearch
 count = 0
 for site_name in site_names:
     count = count + 1
-    print(count)
+    print(count,site_name)
     # hkxX68ZPyntLT6qdbLnlbk6NqXCv5fQadYm0BGSUER8
     bing_web = PyBingWebSearch(
         'hkxX68ZPyntLT6qdbLnlbk6NqXCv5fQadYm0BGSUER8','"'+site_name+'"'+' 隨意窩 Xuite日誌')
