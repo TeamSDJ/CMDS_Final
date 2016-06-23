@@ -18,7 +18,7 @@ with open("taiwan_sites_geo_infos.dat", 'rb') as f:
 from get_places import *
 
 
-for site in site_names[0:10]:
+for site in site_names:
     try:
         if geo_infos[site]!=None:
             print(site,' skipped !')
