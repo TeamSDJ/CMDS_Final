@@ -9,7 +9,7 @@ def get_places(site_name):
     input = site_name
     input = quote(input)
 
-    key   = "AIzaSyDtKhiLy6lnkUI2BQj-6Rjv9eCg0gUmeoI"
+    key   = "AIzaSyBpk_fl186DGDalxmf2MSzG1126EFDBauM"
     token = "EAACEdEose0cBAG7aS3xZAlQpKdUHySK67lskzS6FURnTuTkrT4bM9aqhm04leXOXFMpmufDG1RMoU8YWDooySDaaqSbTGmGudmgKYr5KkpmSBzyRc3xT1irZBwV9nDKkTZA2DZAX4ncj0QXWa99DZCoLMOWD7TdKaZBxAzlH3pqAZDZD"
 
     url = "https://maps.googleapis.com/maps/api/place/queryautocomplete/json?input=%s&key=%s&language=zh-TW" % (input, key)
@@ -17,6 +17,7 @@ def get_places(site_name):
     response = urllib.request.urlopen(url)
     content = response.read()
     jsongeocode = json.loads(content.decode("utf8"))
+    jsongeocode
     if jsongeocode['status'] != 'OK':
         print(jsongeocode['status'])
         return None
