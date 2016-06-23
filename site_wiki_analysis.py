@@ -134,6 +134,13 @@ from visualize_package import *
 # @NOTE: plot the generated matrix :
 for class_cov_table in sup_class_covs:
     plot_matrix(class_cov_table)
+
+# @NOTE: plot the class 2d embedding
+for i in range(len(sup_condis)):
+    cat_2d = dimension_reduction(sup_condis[i].transpose())
+    plot_word_embedding(plt, cat_2d, num=i, labels=pd.DataFrame(sup_class_covs[0].columns))
+plt.show()
+
 for class_cov_table in unsup_class_covs:
     plot_matrix(class_cov_table)
 # @NOTE: compare the value of two matrix of same shape,
@@ -246,31 +253,68 @@ def plot_np_matrix(M):
     plt.imshow(M,interpolation='nearest')
     plt.colorbar()
 
+unsup_condis_sim_table = pd.DataFrame(unsup_condis_sim_M)
+unsup_doc_vecs_sim_table = pd.DataFrame(unsup_doc_vecs_sim_M)
+unsup_w_doc_vecs_sim_table = pd.DataFrame(unsup_w_doc_vecs_sim_M)
+sup_w_doc_vecs_sim_table = pd.DataFrame(sup_w_doc_vecs_sim_M)
+unsup_doc_covs_sim_table = pd.DataFrame(unsup_doc_covs_sim_M)
 
-plt.figure(1)
-plot_np_matrix(unsup_doc_vecs_sim_M)
-plt.figure(2)
-plot_np_matrix(unsup_doc_covs_sim_M)
-plt.figure(12)
-plot_np_matrix(unsup_doc_vecs_sim_M-unsup_doc_covs_sim_M)
-plt.figure(3)
-plot_np_matrix(unsup_condis_sim_M)
-#plt.figure(4)
-#plot_np_matrix(sup_w_doc_vecs_sim_M)
-plt.figure(5)
-plot_np_matrix(unsup_w_doc_vecs_sim_M)
-#plt.figure(45)
-#plot_np_matrix(sup_w_doc_vecs_sim_M-unsup_w_doc_vecs_sim_M)
+indexes = ['title','xbody','wiki summary','wiki subtitles','wiki segtions','wiki links']
+unsup_condis_sim_table.index=indexes
+unsup_condis_sim_table.columns = indexes
+unsup_doc_vecs_sim_table.index=indexes
+unsup_doc_vecs_sim_table.columns = indexes
+unsup_w_doc_vecs_sim_table.index=indexes
+unsup_w_doc_vecs_sim_table.columns = indexes
+sup_w_doc_vecs_sim_table.index=indexes
+sup_w_doc_vecs_sim_table.columns = indexes
+unsup_doc_covs_sim_table.index=indexes
+unsup_doc_covs_sim_table.columns = indexes
+
+plot_matrix(unsup_condis_sim_table)
+plot_matrix(unsup_w_doc_vecs_sim_table)
+plot_matrix(unsup_doc_vecs_sim_table)
+plot_matrix(unsup_doc_covs_sim_table)
+
+plot_matrix((unsup_doc_vecs_sim_table-unsup_doc_covs_sim_table)/unsup_doc_vecs_sim_table)
+
 # using unsupervised weighted doc vec as embedding is the same as supervised weighted doc vec
 # => the weighted are the same no matter supevising label or not.
 plt.show()
 
+# NOTE: dimension reduction
+
+info_2d = dimension_reduction(unsup_condis_sim_table.transpose())
+plot_word_embedding(plt, info_2d, num=1, labels=pd.DataFrame(indexes),color_on=False)
+info_2d = dimension_reduction(unsup_w_doc_vecs_sim_table.transpose())
+plot_word_embedding(plt, info_2d, num=2, labels=pd.DataFrame(indexes),color_on=False)
+info_2d = dimension_reduction(unsup_doc_vecs_sim_table.transpose())
+plot_word_embedding(plt, info_2d, num=3, labels=pd.DataFrame(indexes),color_on=False)
+info_2d = dimension_reduction(unsup_doc_covs_sim_table.transpose())
+plot_word_embedding(plt, info_2d, num=4, labels=pd.DataFrame(indexes),color_on=False)
+plt.show()
+
+
+matrix_name = ['coditional weighted','term count weighted','term count','term count covariance']
 for k in range(6):
     plt.figure(k)
+    all_doc_em_sim_M = local_similarity([unsup_condis_neighbors[k],unsup_w_doc_vecs_neighbors[k],unsup_doc_vecs_neighbors[k],unsup_doc_covs_neighbors[k]])
+    all_doc_em_sim_table = pd.DataFrame(all_doc_em_sim_M)
+    all_doc_em_sim_table.index = matrix_name
+    all_doc_em_sim_table.columns = matrix_name
+    plot_matrix(all_doc_em_sim_table)
 
-    all_doc_em_sim_M = local_similarity([unsup_doc_covs_neighbors[k],unsup_doc_vecs_neighbors[k],unsup_condis_neighbors[k],unsup_w_doc_vecs_neighbors[k]])
-    plot_np_matrix(all_doc_em_sim_M)
+plt.show()
 
+
+for k in range(6):
+    plt.figure(k)
+    all_doc_em_sim_M = local_similarity([unsup_condis_neighbors[k],unsup_w_doc_vecs_neighbors[k],unsup_doc_vecs_neighbors[k],unsup_doc_covs_neighbors[k]])
+    all_doc_em_sim_table = pd.DataFrame(all_doc_em_sim_M)
+    all_doc_em_sim_table.index = matrix_name
+    all_doc_em_sim_table.columns = matrix_name
+    matrix_2d = dimension_reduction(all_doc_em_sim_table.transpose())
+    plot_word_embedding(plt, matrix_2d, num=k, labels=pd.DataFrame(matrix_name),color_on=False,size_='x-large')
 plt.show()
 
 # NOTE: analysis of the result:
