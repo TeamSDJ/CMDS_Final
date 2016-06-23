@@ -9,8 +9,8 @@ def get_places(site_name):
     input = site_name
     input = quote(input)
 
-    key   = "AIzaSyBqJjkdH1kTeEJMfILog4w-Wez9M9URZag"
-    token = "EAALoPr8WJz4BACuIz1hSKsDdez4DRztUghLXsEzQKZB92ssnv8kOR1YYdUB2ZCTU1i3DLHRSkWZA3eH0ZBYOnZBPZCGKaBX7H17Kv6wtPQYUEhgjkrVb7LtOXo4m5OodgNRZCKVLXZAnZAAmGbvZCaonfz33ZAmW4wsiKQZD"
+    key   = "AIzaSyDtKhiLy6lnkUI2BQj-6Rjv9eCg0gUmeoI"
+    token = "EAACEdEose0cBAG7aS3xZAlQpKdUHySK67lskzS6FURnTuTkrT4bM9aqhm04leXOXFMpmufDG1RMoU8YWDooySDaaqSbTGmGudmgKYr5KkpmSBzyRc3xT1irZBwV9nDKkTZA2DZAX4ncj0QXWa99DZCoLMOWD7TdKaZBxAzlH3pqAZDZD"
 
     url = "https://maps.googleapis.com/maps/api/place/queryautocomplete/json?input=%s&key=%s&language=zh-TW" % (input, key)
     import urllib.request, json
@@ -18,13 +18,16 @@ def get_places(site_name):
     content = response.read()
     jsongeocode = json.loads(content.decode("utf8"))
     if jsongeocode['status'] != 'OK':
+        print(jsongeocode['status'])
         return None
+
     try:
         id  = jsongeocode['predictions'][0]['place_id']
         url = "https://maps.googleapis.com/maps/api/place/details/json?placeid=%s&key=%s" % (id, key)
         response = urllib.request.urlopen(url)
         jsongeocode = json.loads(response.read().decode("utf8"))
         if jsongeocode['status'] != 'OK':
+            print(jsongeocode['status'])
             return None
     except KeyError:
         return None

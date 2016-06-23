@@ -1,4 +1,9 @@
-*facebook graph api access token EAACEdEose0cBAG7aS3xZAlQpKdUHySK67lskzS6FURnTuTkrT4bM9aqhm04leXOXFMpmufDG1RMoU8YWDooySDaaqSbTGmGudmgKYr5KkpmSBzyRc3xT1irZBwV9nDKkTZA2DZAX4ncj0QXWa99DZCoLMOWD7TdKaZBxAzlH3pqAZDZD
+* facebook graph api access token
+1. EAACEdEose0cBAG7aS3xZAlQpKdUHySK67lskzS6FURnTuTkrT4bM9aqhm04leXOXFMpmufDG1RMoU8YWDooySDaaqSbTGmGudmgKYr5KkpmSBzyRc3xT1irZBwV9nDKkTZA2DZAX4ncj0QXWa99DZCoLMOWD7TdKaZBxAzlH3pqAZDZD
+2. EAALoPr8WJz4BACuIz1hSKsDdez4DRztUghLXsEzQKZB92ssnv8kOR1YYdUB2ZCTU1i3DLHRSkWZA3eH0ZBYOnZBPZCGKaBX7H17Kv6wtPQYUEhgjkrVb7LtOXo4m5OodgNRZCKVLXZAnZAAmGbvZCaonfz33ZAmW4wsiKQZD
+* google map api key
+1. AIzaSyDtKhiLy6lnkUI2BQj-6Rjv9eCg0gUmeoI
+2. AIzaSyBqJjkdH1kTeEJMfILog4w-Wez9M9URZag
 
 # 1. in this analysis work, we come up with using wiki pages and other infos of the site as a guide of similarity between
 # sites and further categories sites. The definition of the similarity should not include the closeness of their location!
