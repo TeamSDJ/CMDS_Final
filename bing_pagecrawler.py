@@ -1,7 +1,7 @@
 import pickle
 import six.moves.cPickle as pickle
 # load data
-with open("taiwan_sites_page1.dat", 'rb') as f:
+with open("taiwan_sites_page.dat", 'rb') as f:
     site_urls = pickle.load(f)
 
 
@@ -19,5 +19,5 @@ for site in list(site_urls.keys()):
 import six.moves.cPickle as pickle
 
 # save data
-with open("taiwan_sites_page1_with_text.dat", "wb") as f:
+with open("taiwan_sites_page_with_text.dat", "wb") as f:
     pickle.dump(url_dict, f, protocol=1)
