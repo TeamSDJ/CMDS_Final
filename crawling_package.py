@@ -54,7 +54,7 @@ def convert_to_strings(wikipage):
         sections = None
 
     try:
-        sections = list(zip(sub_titles, section_content))
+        sections = dict(zip(sub_titles, section_content))
     except:
         sections = None
     try:
