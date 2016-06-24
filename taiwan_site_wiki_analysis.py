@@ -74,6 +74,23 @@ for title in site_names:
 # xuite
 
 
+# REVIEW load geo information
+import pickle
+import six.moves.cPickle as pickle
+# load data
+with open("taiwan_sites_geo_infos.dat", 'rb') as f:
+    geo_infos = pickle.load(f)
+
+for key in geo_infos.keys():
+    if(geo_infos[key]==None):
+        print(key)
+for key in geo_infos.keys():
+    print(key)
+    if(geo_infos[key]!=None):
+        for site in geo_infos[key]:
+            print(site['name'],end="||")
+    print()
+
 
 
 # NOTE:use the terms that are annotated with links as documents for each
