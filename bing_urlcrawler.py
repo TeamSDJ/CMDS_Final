@@ -2,12 +2,8 @@
 import pickle
 import six.moves.cPickle as pickle
 # load data
-with open("taiwan_sites.dat", 'rb') as f:
+with open("pages.dat", 'rb') as f:
     wiki_pages = pickle.load(f)
-
-
-
-
 
 
 
@@ -23,7 +19,7 @@ for site_name in site_names:
     # hkxX68ZPyntLT6qdbLnlbk6NqXCv5fQadYm0BGSUER8
     bing_web = PyBingWebSearch(
         'PtmTrhdWTdbSZTpKw/dfN2dc3TL4DsC1QGOWHsW41yA','"'+site_name+'"'+' 痞客邦 pixnet')
-    pages = bing_web.search(limit=50, format='json')
+    pages = bing_web.search(limit=5, format='json')
     page_list = []
     for page in pages:
         page_list.append({"url":page.url,"title":page.title,"description":page.description})
@@ -35,5 +31,5 @@ for site_name in site_names:
 import six.moves.cPickle as pickle
 
 # save data
-with open("taiwan_sites_page.dat", "wb") as f:
+with open("taipei_sites_page.dat", "wb") as f:
     pickle.dump(pages_dict, f, protocol=1)
