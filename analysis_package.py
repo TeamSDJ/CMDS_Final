@@ -98,7 +98,7 @@ def analysis(pd,title_data,cat_data,text_data,hfc=0.,lfc=0.):
     # generate weighted document vectors
     weights = np.sum(condprob,1)
 
-    weighted_doc_vec_M=body_vecs_M.toarray()*np.array(weights.tolist())
+    #weighted_doc_vec_M=body_vecs_M.toarray()*np.array(weights.tolist())
 
 
     #for i in range(len(cat_list)):
@@ -111,9 +111,9 @@ def analysis(pd,title_data,cat_data,text_data,hfc=0.,lfc=0.):
     condi_table = pd.DataFrame(condprob,columns=cat_list,index=V)
     doc_cov_table = pd.DataFrame(doc_cov_M,columns=site_names,index=site_names)
     class_cov_table = pd.DataFrame(class_cov_M,columns=cat_list,index=cat_list)
-    weighted_doc_vec_table = pd.DataFrame(np.matrix(body_vecs_M.toarray()),columns=site_names,index=V)
-    doc_vec_table = pd.DataFrame(np.matrix(weighted_doc_vec_M),columns=site_names,index=V)
-    return prior_table,condi_table,doc_cov_table,class_cov_table,doc_vec_table,weighted_doc_vec_table
+    #weighted_doc_vec_table = pd.DataFrame(np.matrix(body_vecs_M.toarray()),columns=site_names,index=V)
+    doc_vec_table = pd.DataFrame(np.matrix(body_vecs_M),columns=site_names,index=V)
+    return prior_table,condi_table,doc_cov_table,class_cov_table,doc_vec_table
 
 def k_nearest_neighbor(table, k):
     from sklearn.neighbors import NearestNeighbors
