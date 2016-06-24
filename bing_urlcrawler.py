@@ -17,7 +17,7 @@ len(site_names)
 pages_dict = dict()
 from py_bing_search import PyBingWebSearch
 count = 0
-for site_name in site_names[0:10]:
+for site_name in site_names:
     count = count + 1
     print(count,site_name)
     # hkxX68ZPyntLT6qdbLnlbk6NqXCv5fQadYm0BGSUER8
