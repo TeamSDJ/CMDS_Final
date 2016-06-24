@@ -15,6 +15,7 @@ for site in list(site_urls.keys()):
         except:
             mark_index = page['url'].rfind('/')
             page["text"]=extract_text(page['url'][:mark_index]+"/"+quote(page['url'][mark_index+1:]))
+            print("with chinese url:",page["text"])
 
 import six.moves.cPickle as pickle
 
