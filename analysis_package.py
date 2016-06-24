@@ -129,3 +129,18 @@ def k_nearest_neighbor(table, k):
         neighbor_list.append(neighbor)
 
     return pd.DataFrame(neighbor_list, index=table.index)
+
+def k_nearest_neighbor_with_distances(table, k):
+    from sklearn.neighbors import NearestNeighbors
+    import pandas as pd
+    nbrs = NearestNeighbors(n_neighbors=k, algorithm='ball_tree').fit(table)
+    distances, indices = nbrs.kneighbors(table)
+    indices
+    neighbor_list = []
+    for i in range(len(table)):
+        neighbor = []
+        for index in indices[i]:
+            neighbor.append(table.index[index])
+        neighbor_list.append(neighbor)
+
+    return pd.DataFrame(neighbor_list, index=table.index),distances

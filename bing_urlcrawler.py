@@ -5,8 +5,6 @@ import six.moves.cPickle as pickle
 with open("pages.dat", 'rb') as f:
     wiki_pages = pickle.load(f)
 
-
-
 site_names = list(wiki_pages.keys())
 len(site_names)
 

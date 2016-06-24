@@ -14,18 +14,20 @@ sites_data = pd.read_excel('sitedata.xlsx', 'Section',
 
 # @REVIEW: Constructing different document string using differnt wiki page content
 from analysis_package import *
+from hanziconv import HanziConv
+
 
 # NOTE:use the wiki page summary as document for each site terms
 wiki_summaries = []
 for title in sites_data[['stitle']].values:
-    wiki_summaries.append("".join([attribute['summary']
-                                   for attribute in wiki_pages[title[0]].values()]))
+    wiki_summaries.append(HanziConv.toTraditional("".join([attribute['summary']
+                                   for attribute in wiki_pages[title[0]].values()])))
 
 # NOTE:use the wiki page subtile as document for each site terms
 wiki_subtitles = []
 for title in sites_data[['stitle']].values:
-    wiki_subtitles.append("。".join(merge_lists([list(dict(
-        attribute['sections']).keys()) for attribute in wiki_pages[title[0]].values()])))
+    wiki_subtitles.append(HanziConv.toTraditional("。".join(merge_lists([list(dict(
+        attribute['sections']).keys()) for attribute in wiki_pages[title[0]].values()]))))
 
 # NOTE:use the whole wiki page as document for each site terms
 # including the title, the sub-titles, the summary content and the
@@ -33,9 +35,10 @@ for title in sites_data[['stitle']].values:
 wiki_segs = []
 for title in sites_data[['stitle']].values:
     wiki_segs.append(
-        "。".join(merge_lists(
+        HanziConv.toTraditional("。".join(merge_lists(
             # + subtitles
             [list(dict(attribute['sections']).values()) for attribute in wiki_pages[title[0]].values()]))  # + the contents of each sub-titles
+        )
     )
 
 # NOTE:use the whole wiki page as document for each site terms
@@ -44,16 +47,16 @@ for title in sites_data[['stitle']].values:
 wiki_whole_page = []
 for title in sites_data[['stitle']].values:
     wiki_whole_page.append(
-        "。".join([attribute['summary'] for attribute in wiki_pages[title[0]].values()] +  # title + summary
+        HanziConv.toTraditional("。".join([attribute['summary'] for attribute in wiki_pages[title[0]].values()] +  # title + summary
                  merge_lists(
             # + subtitles
             [list(dict(attribute['sections']).keys()) for attribute in wiki_pages[title[0]].values()] +
             [list(dict(attribute['sections']).values()) for attribute in wiki_pages[title[0]].values()]))  # + the contents of each sub-titles
+        )
     )
 
 # NOTE:use the terms that are annotated with links as documents for each
 # site terms
-from hanziconv import HanziConv
 wiki_links = []
 for title in sites_data[['stitle']].values:
     try:
@@ -78,8 +81,10 @@ for title in sites_data[['stitle']].values:
 documents = [sites_data[['stitle']], sites_data[['xbody']],
              pd.DataFrame(wiki_summaries), pd.DataFrame(wiki_subtitles), pd.DataFrame(wiki_segs), pd.DataFrame(wiki_links)]
 
-hfcs = [0., 0.05, 0.01, 0.1, 0.01, 0.]
-lfcs = [0., 0.2, 0.2, 0., 0.2, 0.]
+#hfcs = [0., 0.05, 0.01, 0.1, 0.01, 0.]
+#lfcs = [0., 0.2, 0.2, 0., 0.2, 0.]
+hfcs = [0.]*len(documents)
+lfcs = [0.]*len(documents)
 # NOTE:Supervised Learning :
 sup_priors = []
 sup_condis = []
