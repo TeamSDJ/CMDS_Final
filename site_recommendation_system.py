@@ -38,10 +38,13 @@ ct_wiki_summary = condi_table.transpose().sort_index()
 
 dc_wiki_link = doc_cov_table.transpose().sort_index()
 pd.concat([ct_wiki_summary, dc_wiki_link], axis=1)
+k = 10
 
-ranking_lists,score_matrix = k_nearest_neighbor_with_distances(pd.concat([ct_wiki_summary, dc_wiki_link], axis=1), 318)
+ranking_lists,score_matrix = k_nearest_neighbor_with_distances(pd.concat([ct_wiki_summary, dc_wiki_link], axis=1), k)
 
-import matplotlib.pylab as plt
 
-plt.imshow(score_matrix)
-plt.show()
+
+input = '中正紀念堂'
+index = list(ranking_lists.index).index(input)
+np.array(ranking_lists)[index,:]
+score_matrix[index,:]
