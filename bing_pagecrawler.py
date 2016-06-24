@@ -20,4 +20,4 @@ import six.moves.cPickle as pickle
 
 # save data
 with open("taiwan_sites_page_with_text.dat", "wb") as f:
-    pickle.dump(url_dict, f, protocol=1)
+    pickle.dump(site_urls, f, protocol=1)
